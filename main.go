@@ -67,6 +67,17 @@ type RowData struct {
 	Numbers []int
 }
 
+func (r *RowData) toCSV() string {
+	s := make([]string, 0, 9)
+	date := fmt.Sprintf("%d-%02d-%02d", r.Year, r.Month, r.Day)
+	s = append(s, date)
+	for _, num := range r.Numbers {
+		numStr := strconv.Itoa(num)
+		s = append(s, numStr)
+	}
+	return strings.Join(s, ",")
+}
+
 func main() {
 	beginDate := toLocalDate(2021, 6, 1)
 	endDate := toLocalDate(2021, 6, 27)
@@ -81,5 +92,7 @@ func main() {
 		numTable = append(numTable, row)
 	}
 
-	fmt.Print(numTable)
+	for _, row := range numTable {
+		fmt.Println(row.toCSV())
+	}
 }
