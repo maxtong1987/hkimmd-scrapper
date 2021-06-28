@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -92,7 +93,16 @@ func main() {
 		numTable = append(numTable, row)
 	}
 
-	for _, row := range numTable {
-		fmt.Println(row.toCSV())
+	f, err := os.Create("data.csv")
+
+	if err != nil {
+		log.Fatal(err)
 	}
+	defer f.Close()
+
+	for _, row := range numTable {
+		f.WriteString(row.toCSV() + "\n")
+	}
+
+	fmt.Print("Complete!")
 }
