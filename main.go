@@ -34,7 +34,7 @@ func getDocFromUrl(url string) (*goquery.Document, error) {
 
 }
 
-func getDataByDate(year, month, day int) (*RowData, error) {
+func getRow(year, month, day int) (*RowData, error) {
 	url := getUrl(year, month, day)
 	doc, err := getDocFromUrl(url)
 	if err != nil {
@@ -74,7 +74,7 @@ func main() {
 	numTable := make([]*RowData, 0, 365)
 
 	for date := beginDate; date.Before(endDate); date = date.AddDate(0, 0, 1) {
-		row, err := getDataByDate(date.Year(), int(date.Month()), date.Day())
+		row, err := getRow(date.Year(), int(date.Month()), date.Day())
 		if err != nil {
 			log.Fatal(err)
 		}
