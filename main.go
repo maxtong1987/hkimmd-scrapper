@@ -24,14 +24,19 @@ func toLocalDate(year, month, day int) time.Time {
 	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local)
 }
 
-func getDataByDate(year, month, day int) ([]int, error) {
-	url := getUrl(year, month, day)
+func getDocFromUrl(url string) (*goquery.Document, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	doc, err := goquery.NewDocumentFromReader(resp.Body)
+	return goquery.NewDocumentFromReader(resp.Body)
+
+}
+
+func getDataByDate(year, month, day int) ([]int, error) {
+	url := getUrl(year, month, day)
+	doc, err := getDocFromUrl(url)
 	if err != nil {
 		fmt.Print(err)
 		return nil, err
