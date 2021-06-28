@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
+func getUrl(year, month, day int) string {
+	return fmt.Sprintf("https://www.immd.gov.hk/hkt/stat_%02d%02d%02d.html", year, month, day)
+}
+
 func main() {
-	resp, err := http.Get("https://www.immd.gov.hk/hkt/stat_20210531.html")
+	url := getUrl(2021, 5, 1)
+	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Print(err)
 		return
