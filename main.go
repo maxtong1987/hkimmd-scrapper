@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"net/http"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 func getUrl(year, month, day int) string {
@@ -11,17 +12,21 @@ func getUrl(year, month, day int) string {
 }
 
 func main() {
-	url := getUrl(2021, 5, 1)
+	url := getUrl(2021, 5, 31)
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Print(err)
 		return
 	}
 	defer resp.Body.Close()
-	body, err := io.ReadAll(resp.Body)
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		fmt.Print(err)
 		return
 	}
-	fmt.Println(string(body))
+	doc.Find(".a").ChildrenFiltered(".hRight").Each(
+		func(i int, element *goquery.Selection) {
+			txt := element.Text()
+			fmt.Println(txt)
+		})
 }
