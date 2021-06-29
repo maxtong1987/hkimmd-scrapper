@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -19,10 +20,6 @@ func getUrl(year, month, day int) string {
 func text2Int(text string) (int, error) {
 	str := strings.ReplaceAll(text, ",", "")
 	return strconv.Atoi(str)
-}
-
-func toLocalDate(year, month, day int) time.Time {
-	return time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local)
 }
 
 func getDocFromUrl(url string) (*goquery.Document, error) {
@@ -72,18 +69,27 @@ func getRows(begin, end time.Time) ([]*Row, error) {
 	return rows, nil
 }
 
-func main() {
-	beginDate := toLocalDate(2021, 6, 1)
-	endDate := toLocalDate(2021, 6, 27)
-	csvFile := "data.csv"
+var (
+	beginDate dateVar
+	endDate   dateVar
+	csvFile   string
+)
 
+func init() {
+	flag.Var(&beginDate, "b", "begin date (e.g. 2020-01-21)")
+	flag.Var(&endDate, "e", "end date (e.g. 2020-01-27)")
+	flag.StringVar(&csvFile, "f", "data.csv", "csv file in which you want to save passenger traffic data")
+}
+
+func main() {
+	flag.Parse()
 	f, err := os.Create(csvFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
-	rows, err := getRows(beginDate, endDate)
+	rows, err := getRows(beginDate.Time, endDate.Time)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -92,5 +98,5 @@ func main() {
 		f.WriteString(row.toCSV() + "\n")
 	}
 
-	fmt.Print("Complete!")
+	fmt.Println("Complete!")
 }
