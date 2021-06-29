@@ -82,9 +82,15 @@ func (r *RowData) toCSV() string {
 func main() {
 	beginDate := toLocalDate(2021, 6, 1)
 	endDate := toLocalDate(2021, 6, 27)
+	csvFile := "data.csv"
+
+	f, err := os.Create(csvFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
 
 	numTable := make([]*RowData, 0, 365)
-
 	for date := beginDate; date.Before(endDate); date = date.AddDate(0, 0, 1) {
 		row, err := getRow(date.Year(), int(date.Month()), date.Day())
 		if err != nil {
@@ -92,13 +98,6 @@ func main() {
 		}
 		numTable = append(numTable, row)
 	}
-
-	f, err := os.Create("data.csv")
-
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
 
 	for _, row := range numTable {
 		f.WriteString(row.toCSV() + "\n")
