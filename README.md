@@ -2,12 +2,12 @@
 scrapping airport passenger traffic statistics on https://www.immd.gov.hk/
 
 ## How to build
-```go
+```bash
 go build .
 ```
 
 ## How to run
-```go
+```bash
 ./hkimmd-scrapper -b "2021-05-01" -e "2021-05-07" -f "test.csv"
 ```
 
