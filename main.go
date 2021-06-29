@@ -61,6 +61,18 @@ func getRow(year, month, day int) (*Row, error) {
 	}, nil
 }
 
+func getRows(begin, end time.Time) ([]*Row, error) {
+	rows := make([]*Row, 0, 1024)
+	for date := begin; date.Before(end); date = date.AddDate(0, 0, 1) {
+		row, err := getRow(date.Year(), int(date.Month()), date.Day())
+		if err != nil {
+			return nil, err
+		}
+		rows = append(rows, row)
+	}
+	return rows, nil
+}
+
 // Row stores one Row of passenger traffic data
 type Row struct {
 	Year    int
@@ -91,16 +103,12 @@ func main() {
 	}
 	defer f.Close()
 
-	numTable := make([]*Row, 0, 365)
-	for date := beginDate; date.Before(endDate); date = date.AddDate(0, 0, 1) {
-		row, err := getRow(date.Year(), int(date.Month()), date.Day())
-		if err != nil {
-			log.Fatal(err)
-		}
-		numTable = append(numTable, row)
+	rows, err := getRows(beginDate, endDate)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	for _, row := range numTable {
+	for _, row := range rows {
 		f.WriteString(row.toCSV() + "\n")
 	}
 
