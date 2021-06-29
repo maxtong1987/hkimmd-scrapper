@@ -35,7 +35,7 @@ func getDocFromUrl(url string) (*goquery.Document, error) {
 
 }
 
-func getRowData(year, month, day int) (*RowData, error) {
+func getRow(year, month, day int) (*Row, error) {
 	url := getUrl(year, month, day)
 	doc, err := getDocFromUrl(url)
 	if err != nil {
@@ -53,7 +53,7 @@ func getRowData(year, month, day int) (*RowData, error) {
 			}
 			numbers = append(numbers, num)
 		})
-	return &RowData{
+	return &Row{
 		Year:    year,
 		Month:   month,
 		Day:     day,
@@ -61,15 +61,15 @@ func getRowData(year, month, day int) (*RowData, error) {
 	}, nil
 }
 
-// RowData stores one row of passenger traffic data
-type RowData struct {
+// Row stores one Row of passenger traffic data
+type Row struct {
 	Year    int
 	Month   int
 	Day     int
 	Numbers []int
 }
 
-func (r *RowData) toCSV() string {
+func (r *Row) toCSV() string {
 	s := make([]string, 0, 9)
 	date := fmt.Sprintf("%d-%02d-%02d", r.Year, r.Month, r.Day)
 	s = append(s, date)
@@ -91,9 +91,9 @@ func main() {
 	}
 	defer f.Close()
 
-	numTable := make([]*RowData, 0, 365)
+	numTable := make([]*Row, 0, 365)
 	for date := beginDate; date.Before(endDate); date = date.AddDate(0, 0, 1) {
-		row, err := getRowData(date.Year(), int(date.Month()), date.Day())
+		row, err := getRow(date.Year(), int(date.Month()), date.Day())
 		if err != nil {
 			log.Fatal(err)
 		}
