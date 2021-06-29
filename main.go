@@ -32,7 +32,6 @@ func getDocFromUrl(url string) (*goquery.Document, error) {
 	}
 	defer resp.Body.Close()
 	return goquery.NewDocumentFromReader(resp.Body)
-
 }
 
 func getRow(year, month, day int) (*Row, error) {
@@ -71,25 +70,6 @@ func getRows(begin, end time.Time) ([]*Row, error) {
 		rows = append(rows, row)
 	}
 	return rows, nil
-}
-
-// Row stores one Row of passenger traffic data
-type Row struct {
-	Year    int
-	Month   int
-	Day     int
-	Numbers []int
-}
-
-func (r *Row) toCSV() string {
-	s := make([]string, 0, 9)
-	date := fmt.Sprintf("%d-%02d-%02d", r.Year, r.Month, r.Day)
-	s = append(s, date)
-	for _, num := range r.Numbers {
-		numStr := strconv.Itoa(num)
-		s = append(s, numStr)
-	}
-	return strings.Join(s, ",")
 }
 
 func main() {
