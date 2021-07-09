@@ -14,8 +14,8 @@ type Row struct {
 	Numbers []int
 }
 
-// toCSV converts Row into csv format string
-func (r *Row) toCSV() string {
+// ToCSV converts Row into csv format string
+func (r *Row) ToCSV() string {
 	s := make([]string, 0, 9)
 	date := fmt.Sprintf("%d-%02d-%02d", r.Year, r.Month, r.Day)
 	s = append(s, date)

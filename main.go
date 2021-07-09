@@ -95,7 +95,7 @@ func main() {
 	}
 
 	for _, row := range rows {
-		f.WriteString(row.toCSV() + "\n")
+		f.WriteString(row.ToCSV() + "\n")
 	}
 
 	fmt.Println("Complete!")
